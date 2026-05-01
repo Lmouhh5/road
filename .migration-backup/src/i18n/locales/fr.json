@@ -1,0 +1,619 @@
+{
+  "app": {
+    "name": "Routis",
+    "tagline": "Contrôle financier des chantiers"
+  },
+  "nav": {
+    "section_finance": "Finance",
+    "section_operations": "Opérations",
+    "section_analysis": "Analyse",
+    "section_system": "Système",
+    "dashboard": "Tableau de bord",
+    "cash": "Trésorerie",
+    "expenses": "Dépenses",
+    "revenue": "Recettes & Factures",
+    "payroll": "Paie",
+    "attendance": "Présence",
+    "projects": "Chantiers",
+    "machines": "Machines & Véhicules",
+    "suppliers": "Fournisseurs",
+    "employees": "Employés",
+    "reports": "Rapports financiers",
+    "alerts": "Alertes & Fuites",
+    "data_entry": "Saisie de données",
+    "settings": "Paramètres"
+  },
+  "topbar": {
+    "search_placeholder": "Rechercher chantier, fournisseur, employé…",
+    "language": "Langue",
+    "theme_light": "Mode clair",
+    "theme_dark": "Mode sombre"
+  },
+  "common": {
+    "this_month": "Ce mois",
+    "last_month": "Mois dernier",
+    "vs_prev": "vs mois précédent",
+    "view_all": "Tout voir",
+    "loading": "Chargement…",
+    "no_data": "Aucune donnée"
+  },
+  "dashboard": {
+    "title": "Tableau de bord",
+    "subtitle": "Pulsation financière de l'entreprise — temps réel",
+    "kpi": {
+      "revenue": "Recettes du mois",
+      "expenses": "Dépenses du mois",
+      "profit": "Bénéfice net",
+      "uncleared": "Caisse non régularisée",
+      "missing_proof": "Dépenses sans pièce"
+    },
+    "charts": {
+      "cashflow_title": "Flux de trésorerie mensuel",
+      "cashflow_sub": "6 derniers mois — Recettes vs Dépenses",
+      "expense_dist_title": "Répartition des dépenses",
+      "expense_dist_sub": "Par catégorie, ce mois",
+      "project_status_title": "État des chantiers",
+      "project_status_sub": "% du budget consommé"
+    },
+    "projects": {
+      "title": "Chantiers actifs",
+      "name": "Chantier",
+      "budget": "Budget",
+      "spent": "Dépensé",
+      "remaining": "Restant",
+      "margin": "Marge",
+      "status": "Statut"
+    },
+    "alerts": {
+      "title": "Synthèse des alertes",
+      "uncleared": "Détenteurs non régularisés",
+      "missing_proof": "Pièces manquantes",
+      "overdue": "Factures en retard",
+      "fuel": "Anomalies carburant"
+    },
+    "status": {
+      "on_track": "En piste",
+      "at_risk": "À risque",
+      "delayed": "Retard"
+    }
+  },
+  "categories": {
+    "fuel": "Carburant",
+    "labor": "Main-d'œuvre",
+    "materials": "Matériaux",
+    "repairs": "Réparations",
+    "transport": "Transport",
+    "subcontracting": "Sous-traitance",
+    "other": "Autre"
+  },
+  "page": {
+    "coming_soon": "Cette section sera disponible dans une prochaine itération.",
+    "in_progress": "En préparation"
+  },
+  "common2": {
+    "search": "Rechercher",
+    "all": "Tous",
+    "filter": "Filtrer",
+    "export": "Exporter",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "add": "Ajouter",
+    "today": "Aujourd'hui",
+    "yesterday": "Hier",
+    "date": "Date",
+    "amount": "Montant",
+    "count": "Nombre",
+    "actions": "Actions",
+    "category": "Catégorie",
+    "supplier": "Fournisseur",
+    "project": "Chantier",
+    "description": "Description",
+    "method": "Mode",
+    "proof": "Pièce",
+    "paid_by": "Payé par",
+    "client": "Client",
+    "manager": "Responsable",
+    "progress": "Avancement",
+    "start": "Début",
+    "end": "Fin",
+    "location": "Localisation",
+    "results": "résultats"
+  },
+  "method": {
+    "cash": "Espèces",
+    "bank": "Virement",
+    "credit": "Crédit"
+  },
+  "proof": {
+    "ok": "OK",
+    "missing": "Manquante",
+    "pending": "En attente"
+  },
+  "data_entry": {
+    "title": "Saisie de données",
+    "subtitle": "Point d'entrée unique pour toutes les opérations financières",
+    "tabs": {
+      "expense": "Dépense",
+      "revenue": "Recette",
+      "cash": "Mouvement caisse",
+      "attendance": "Présence"
+    },
+    "form": {
+      "expense_title": "Nouvelle dépense",
+      "revenue_title": "Nouvelle recette",
+      "cash_title": "Mouvement de caisse",
+      "attendance_title": "Saisie de présence",
+      "select_project": "Choisir un chantier",
+      "select_category": "Choisir une catégorie",
+      "select_supplier": "Choisir un fournisseur",
+      "select_method": "Mode de paiement",
+      "amount_da": "Montant (DA)",
+      "description_ph": "Brève description…",
+      "invoice_number": "N° facture",
+      "client": "Client",
+      "direction": "Type de mouvement",
+      "in": "Entrée",
+      "out": "Sortie",
+      "holder": "Détenteur",
+      "date_present": "Date de pointage",
+      "team_size": "Effectif présent",
+      "submit": "Enregistrer l'opération",
+      "saved": "Opération enregistrée"
+    },
+    "recent": {
+      "title": "Activité récente",
+      "subtitle": "Dernières opérations saisies",
+      "expense": "Dépense",
+      "revenue": "Recette",
+      "cash_in": "Entrée caisse",
+      "cash_out": "Sortie caisse",
+      "attendance": "Pointage"
+    },
+    "today_summary": {
+      "title": "Activité du jour",
+      "entries": "Saisies",
+      "expenses": "Dépenses",
+      "revenues": "Recettes",
+      "cash_moves": "Mouvements caisse"
+    }
+  },
+  "projects_page": {
+    "title": "Chantiers",
+    "subtitle": "Portefeuille de chantiers actifs et performance budgétaire",
+    "kpi": {
+      "active": "Chantiers actifs",
+      "budget": "Budget cumulé",
+      "spent": "Dépensé total",
+      "avg_margin": "Marge moyenne"
+    },
+    "filter": {
+      "all": "Tous",
+      "on_track": "En piste",
+      "at_risk": "À risque",
+      "delayed": "Retard"
+    },
+    "consumption_title": "Consommation budgétaire par chantier",
+    "consumption_sub": "Budget vs Dépensé (DA)",
+    "margin_title": "Marge par chantier",
+    "margin_sub": "Distribution des marges actuelles",
+    "list_title": "Liste des chantiers",
+    "view_grid": "Grille",
+    "view_table": "Tableau",
+    "trend_6m": "Dépense 6 mois"
+  },
+  "expenses_page": {
+    "title": "Dépenses",
+    "subtitle": "Journal complet des dépenses et conformité documentaire",
+    "kpi": {
+      "total_month": "Total ce mois",
+      "missing_proof": "Pièces manquantes",
+      "cash_share": "Part en espèces",
+      "top_category": "Catégorie dominante"
+    },
+    "trend_title": "Tendance des dépenses",
+    "trend_sub": "Évolution mensuelle par mode",
+    "by_category_title": "Dépenses par catégorie",
+    "by_category_sub": "Répartition cumulative",
+    "top_suppliers_title": "Top fournisseurs",
+    "top_suppliers_sub": "Par montant cumulé",
+    "ledger_title": "Journal des dépenses",
+    "all_categories": "Toutes catégories",
+    "all_methods": "Tous modes",
+    "all_proofs": "Tous statuts",
+    "all_projects": "Tous chantiers"
+  },
+  "cash_page": {
+    "title": "Trésorerie",
+    "subtitle": "Position de caisse, banque et détenteurs d'avances",
+    "kpi": {
+      "bank": "Solde bancaire",
+      "cash": "Caisse centrale",
+      "uncleared": "Avances non régularisées",
+      "holders": "Détenteurs actifs"
+    },
+    "balance_title": "Position de trésorerie — 30 jours",
+    "balance_sub": "Banque vs Caisse (DA)",
+    "split_title": "Composition actuelle",
+    "split_sub": "Banque · Caisse · Avances",
+    "holders_title": "Détenteurs d'avances",
+    "holders_sub": "Soldes en cours et délai depuis dernière régularisation",
+    "movements_title": "Mouvements de caisse",
+    "movements_sub": "Entrées et sorties récentes",
+    "holder": "Détenteur",
+    "balance": "Solde",
+    "last_cleared": "Régularisé",
+    "days_open": "j ouverts",
+    "in": "Entrée",
+    "out": "Sortie",
+    "reason": "Motif",
+    "ref": "Référence",
+    "clear": "Régulariser",
+    "status_ok": "À jour",
+    "status_at_risk": "À surveiller",
+    "status_overdue": "En retard"
+  },
+  "revenue_page": {
+    "title": "Recettes & Factures",
+    "subtitle": "Facturation client, encaissements et créances",
+    "kpi": {
+      "invoiced": "Facturé ce mois",
+      "collected": "Encaissé ce mois",
+      "outstanding": "En attente",
+      "overdue": "En retard"
+    },
+    "trend_title": "Facturation vs Encaissement",
+    "trend_sub": "6 derniers mois (DA)",
+    "aging_title": "Vieillissement des créances",
+    "aging_sub": "Par tranche d'ancienneté",
+    "by_client_title": "Top clients",
+    "by_client_sub": "Chiffre d'affaires cumulé",
+    "list_title": "Factures clients",
+    "number": "N°",
+    "date": "Émise",
+    "due": "Échéance",
+    "amount": "Montant",
+    "paid": "Encaissé",
+    "balance": "Reste",
+    "status": "Statut",
+    "all_statuses": "Tous statuts",
+    "all_clients": "Tous clients",
+    "aging_0_30": "0-30 j",
+    "aging_31_60": "31-60 j",
+    "aging_61_90": "61-90 j",
+    "aging_90p": "90+ j"
+  },
+  "invoice_status": {
+    "paid": "Réglée",
+    "partial": "Partielle",
+    "pending": "En attente",
+    "overdue": "En retard"
+  },
+  "reports_page": {
+    "title": "Rapports financiers",
+    "subtitle": "Vision consolidée de l'activité — recettes, dépenses, marges",
+    "kpi": {
+      "revenue": "Recettes (6 mois)",
+      "expenses": "Dépenses (6 mois)",
+      "net": "Résultat net",
+      "margin": "Marge nette"
+    },
+    "pl_title": "Compte de résultat — 6 mois",
+    "pl_sub": "Recettes, dépenses, profit",
+    "margin_title": "Évolution de la marge",
+    "margin_sub": "Marge nette mensuelle (%)",
+    "split_title": "Répartition des dépenses",
+    "split_sub": "Toutes catégories cumulées",
+    "project_title": "Performance par chantier",
+    "project_sub": "Budget consommé et marge",
+    "table_month": "Mois",
+    "table_revenue": "Recettes",
+    "table_expenses": "Dépenses",
+    "table_profit": "Profit",
+    "table_margin": "Marge",
+    "export_pdf": "Export PDF",
+    "export_xlsx": "Export Excel",
+    "period": "Période",
+    "period_6m": "6 derniers mois",
+    "period_12m": "12 derniers mois",
+    "period_ytd": "Année en cours"
+  },
+  "alerts_page": {
+    "title": "Alertes & Fuites",
+    "subtitle": "Détection d'anomalies financières et fuites de trésorerie",
+    "kpi": {
+      "open": "Alertes ouvertes",
+      "critical": "Critiques",
+      "leakage": "Fuites estimées (30j)",
+      "resolved": "Résolues ce mois"
+    },
+    "trend_title": "Volume d'alertes — 30 jours",
+    "trend_sub": "Par niveau de sévérité",
+    "leak_title": "Fuites estimées par catégorie",
+    "leak_sub": "Impact financier sur 30 jours",
+    "feed_title": "Flux d'alertes",
+    "feed_sub": "Anomalies détectées récemment",
+    "all_severities": "Toutes sévérités",
+    "all_kinds": "Tous types",
+    "ack": "Acquitter",
+    "resolve": "Résoudre",
+    "open": "Ouverte",
+    "ack_status": "Acquittée",
+    "resolved": "Résolue"
+  },
+  "alert_severity": {
+    "critical": "Critique",
+    "high": "Haute",
+    "medium": "Moyenne",
+    "low": "Faible"
+  },
+  "alert_kind": {
+    "missing_proof": "Pièce manquante",
+    "uncleared_advance": "Avance non régularisée",
+    "fuel_anomaly": "Anomalie carburant",
+    "budget_overrun": "Dépassement budget",
+    "overdue_invoice": "Facture en retard",
+    "duplicate_expense": "Dépense doublon",
+    "supplier_spike": "Hausse fournisseur"
+  },
+  "leak_cat": {
+    "fuel": "Carburant",
+    "missing_proof": "Pièces manquantes",
+    "uncleared": "Avances ouvertes",
+    "duplicates": "Doublons",
+    "supplier_spike": "Hausses fournisseurs"
+  },
+  "payroll_page": {
+    "title": "Paie",
+    "subtitle": "Gestion des salaires, primes et avances",
+    "kpi": {
+      "gross": "Masse salariale",
+      "net": "Net à payer",
+      "bonuses": "Primes",
+      "advances": "Avances retenues"
+    },
+    "trend_title": "Coût de la paie — 6 mois",
+    "trend_sub": "Salaires de base, primes, avances",
+    "by_project_title": "Charge salariale par chantier",
+    "by_project_sub": "Net cumulé du mois",
+    "list_title": "Bulletins du mois",
+    "validate_all": "Tout valider",
+    "export": "Exporter",
+    "employee": "Employé",
+    "role": "Poste",
+    "project": "Chantier",
+    "base": "Base",
+    "days": "Jours",
+    "bonuses": "Primes",
+    "advances": "Avances",
+    "deductions": "Retenues",
+    "net": "Net",
+    "status": "Statut",
+    "all_statuses": "Tous statuts",
+    "all_projects": "Tous chantiers"
+  },
+  "payroll_status": {
+    "draft": "Brouillon",
+    "validated": "Validé",
+    "paid": "Payé"
+  },
+  "attendance_page": {
+    "title": "Présence",
+    "subtitle": "Pointage quotidien et tendances de présence",
+    "kpi": {
+      "present": "Présents aujourd'hui",
+      "absent": "Absents",
+      "leave": "En congé",
+      "rate": "Taux de présence"
+    },
+    "heatmap_title": "Carte de présence — 12 semaines",
+    "heatmap_sub": "Présents par jour (0 = repos / weekend)",
+    "trend_title": "Présence vs absence",
+    "trend_sub": "Évolution sur 30 jours",
+    "today_title": "Pointage du jour",
+    "today_sub": "Statut individuel par employé",
+    "all_projects": "Tous chantiers",
+    "all_statuses": "Tous statuts",
+    "check_in": "Entrée",
+    "check_out": "Sortie",
+    "hours": "Heures",
+    "less": "Moins",
+    "more": "Plus"
+  },
+  "attendance_status": {
+    "present": "Présent",
+    "absent": "Absent",
+    "leave": "Congé",
+    "rest": "Repos"
+  },
+  "machines_page": {
+    "title": "Machines & Véhicules",
+    "subtitle": "Suivi de la flotte — heures, carburant, réparations, utilisation",
+    "kpi": {
+      "fleet": "Flotte active",
+      "fuel_cost": "Coût carburant (mois)",
+      "repair_cost": "Coût réparations (mois)",
+      "utilization": "Utilisation moy.",
+      "downtime": "Engins en panne"
+    },
+    "filter": {
+      "all": "Tout",
+      "active": "Actif",
+      "idle": "Inactif",
+      "repair": "En réparation"
+    },
+    "fuel_trend_title": "Consommation carburant — 30 jours",
+    "fuel_trend_sub": "Litres / jour — top engins",
+    "cost_rank_title": "Coûts par engin — ce mois",
+    "cost_rank_sub": "Carburant + réparations (DA)",
+    "list_title": "Flotte — détail",
+    "kind": {
+      "truck": "Camion",
+      "excavator": "Pelle",
+      "loader": "Chargeuse",
+      "roller": "Compacteur",
+      "grader": "Niveleuse",
+      "paver": "Finisseur",
+      "pickup": "Pickup"
+    },
+    "status": {
+      "active": "Actif",
+      "idle": "Inactif",
+      "repair": "En réparation"
+    },
+    "col": {
+      "machine": "Engin",
+      "kind": "Type",
+      "project": "Projet",
+      "hours": "Heures",
+      "fuel_l": "Carburant (L)",
+      "fuel_cost": "Coût carb.",
+      "repair": "Réparations",
+      "utilization": "Utilisation",
+      "status": "Statut",
+      "last_service": "Dernière révision"
+    }
+  },
+  "suppliers_page": {
+    "title": "Fournisseurs",
+    "subtitle": "Achats, encours et conditions de paiement",
+    "kpi": {
+      "active": "Fournisseurs actifs",
+      "spend": "Dépenses (90j)",
+      "outstanding": "Encours total",
+      "overdue": "Fournisseurs en retard",
+      "avg_terms": "Délai moy. (j)"
+    },
+    "filter": {
+      "all": "Tout",
+      "ok": "À jour",
+      "balance": "Solde",
+      "overdue": "En retard"
+    },
+    "top_title": "Top fournisseurs — dépenses 90j",
+    "top_sub": "Cliquer pour filtrer la liste",
+    "category_title": "Mix par catégorie",
+    "category_sub": "Répartition des dépenses",
+    "list_title": "Fournisseurs",
+    "status": {
+      "ok": "À jour",
+      "balance": "Solde",
+      "overdue": "En retard"
+    },
+    "col": {
+      "name": "Fournisseur",
+      "category": "Catégorie",
+      "city": "Ville",
+      "spend": "Dépenses",
+      "outstanding": "Encours",
+      "invoices": "Factures",
+      "last": "Dernière facture",
+      "terms": "Délai",
+      "status": "Statut",
+      "contact": "Contact"
+    }
+  },
+  "employees_page": {
+    "title": "Employés",
+    "subtitle": "Effectifs, affectations et trésorerie en main",
+    "kpi": {
+      "headcount": "Effectif total",
+      "active": "En activité",
+      "payroll": "Masse salariale (mois)",
+      "cash": "Trésorerie en main",
+      "uncleared": "Avances ouvertes"
+    },
+    "filter": {
+      "all": "Tous",
+      "active": "Actif",
+      "leave": "Congé",
+      "inactive": "Inactif"
+    },
+    "by_role_title": "Effectif par fonction",
+    "by_role_sub": "Répartition de la main d'œuvre",
+    "by_project_title": "Effectif par projet",
+    "by_project_sub": "Affectations actuelles",
+    "list_title": "Roster",
+    "status": {
+      "active": "Actif",
+      "leave": "Congé",
+      "inactive": "Inactif"
+    },
+    "col": {
+      "name": "Nom",
+      "role": "Fonction",
+      "project": "Projet",
+      "hire": "Embauche",
+      "days": "Jours travaillés",
+      "salary": "Salaire base",
+      "cash": "Trésorerie",
+      "phone": "Téléphone",
+      "status": "Statut"
+    }
+  },
+  "settings_page": {
+    "title": "Paramètres",
+    "subtitle": "Référentiel, seuils, affichage et export",
+    "tabs": {
+      "reference": "Données de référence",
+      "thresholds": "Seuils système",
+      "display": "Affichage",
+      "data": "Données & export"
+    },
+    "ref": {
+      "projects": "Projets",
+      "subcost": "Sous-centres de coût",
+      "categories": "Catégories de dépenses",
+      "employees": "Employés",
+      "machines": "Machines & véhicules",
+      "suppliers": "Fournisseurs",
+      "cash_holders": "Détenteurs de caisse",
+      "manage": "Gérer",
+      "items": "éléments",
+      "view": "Voir",
+      "add": "Ajouter",
+      "hint": "Modifier la liste utilisée dans tous les formulaires"
+    },
+    "thresholds": {
+      "fuel_title": "Anomalie carburant",
+      "fuel_desc": "Litres maximum par remplissage avant alerte",
+      "clearance_title": "Délai de régularisation",
+      "clearance_desc": "Jours avant qu'une avance soit en retard",
+      "trace_title": "Score de traçabilité minimum",
+      "trace_desc": "Niveau d'alerte pour saisies incomplètes",
+      "alerts_title": "Notifications d'alertes",
+      "alerts_desc": "Catégories pour lesquelles afficher des alertes",
+      "alerts_uncleared": "Avances non régularisées",
+      "alerts_proof": "Pièces manquantes",
+      "alerts_fuel": "Anomalies carburant",
+      "alerts_overdue": "Factures en retard"
+    },
+    "display": {
+      "language_title": "Langue par défaut",
+      "language_desc": "Langue utilisée au démarrage",
+      "currency_title": "Format de monnaie",
+      "currency_desc": "Affichage des montants",
+      "date_title": "Format de date",
+      "date_desc": "Format affiché dans les tableaux et graphiques",
+      "theme_title": "Thème",
+      "theme_desc": "Apparence claire ou sombre",
+      "theme_light": "Clair",
+      "theme_dark": "Sombre"
+    },
+    "data": {
+      "export_title": "Exporter toutes les données",
+      "export_desc": "Télécharger un fichier CSV de toutes les saisies",
+      "export_btn": "Exporter en CSV",
+      "report_title": "Format de rapport imprimable",
+      "report_desc": "Mise en page utilisée pour les rapports PDF",
+      "report_a4": "A4 portrait",
+      "report_a4l": "A4 paysage",
+      "report_letter": "Letter",
+      "reset_title": "Réinitialiser les données de démonstration",
+      "reset_desc": "Restaurer le jeu de données initial du prototype",
+      "reset_btn": "Réinitialiser",
+      "danger": "Zone sensible"
+    },
+    "save": "Enregistrer",
+    "saved": "Modifications enregistrées"
+  }
+}
