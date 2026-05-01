@@ -84,6 +84,9 @@
     "repairs": "Réparations",
     "transport": "Transport",
     "subcontracting": "Sous-traitance",
+    "subcontract": "Sous-traitance",
+    "equipment": "Équipement",
+    "overhead": "Frais généraux",
     "other": "Autre"
   },
   "page": {

@@ -11,7 +11,7 @@ export function useAlerts() {
         .select("id, type, severity, message, entity_id, entity_type, resolved, created_at")
         .order("created_at", { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         kind: ((r.type as AlertKind) ?? "missing_proof"),
         severity: ((r.severity as AlertSeverity) ?? "medium"),

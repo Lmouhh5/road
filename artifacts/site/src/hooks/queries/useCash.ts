@@ -11,7 +11,7 @@ export function useCashHolders() {
         .select("id, name, role, balance, updated_at")
         .order("name");
       if (error) throw error;
-      return (data ?? []).map((r) => {
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => {
         const bal = Number(r.balance ?? 0);
         return {
           id: String(r.id),
@@ -36,7 +36,7 @@ export function useCashMovements() {
         .select("id, issue_date, holder_id, amount, source, note")
         .order("issue_date", { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         date: (r.issue_date as string) ?? new Date().toISOString(),
         holderId: String(r.holder_id ?? ""),

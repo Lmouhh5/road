@@ -11,7 +11,7 @@ export function useInvoices() {
         .select("id, invoice_number, issued_date, due_date, project_id, client, amount, paid_amount, status")
         .order("issued_date", { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         number: (r.invoice_number as string) ?? "",
         date: (r.issued_date as string) ?? new Date().toISOString(),

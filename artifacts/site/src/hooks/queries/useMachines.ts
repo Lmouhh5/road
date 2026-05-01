@@ -16,7 +16,7 @@ export function useMachines() {
         .select("id, code, name, type, project_id, status, hours_month, fuel_month, cost_month, last_service")
         .order("code");
       if (error) throw error;
-      return (data ?? []).map((r) => {
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => {
         const fuelLiters = Number(r.fuel_month ?? 0);
         const cost = Number(r.cost_month ?? 0);
         return {

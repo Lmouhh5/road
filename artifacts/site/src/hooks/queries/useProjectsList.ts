@@ -11,7 +11,7 @@ export function useProjectsList() {
         .select("id, code, name")
         .order("code");
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         code: r.code as string,
         name: r.name as string,
