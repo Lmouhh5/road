@@ -12,7 +12,7 @@ export function usePayrollLines() {
   return useQuery<PayrollLine[]>({
     queryKey: ["payroll_lines"],
     queryFn: async () => {
-      const resp = await fetch(`${BASE}/employees?status=active`, { headers: API_HEADERS });
+      const resp = await fetch(`${BASE}/employees?status=active`, { headers: API_HEADERS, credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
       const data = await resp.json() as Array<{
         id: string;

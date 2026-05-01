@@ -206,3 +206,5 @@ export type Expense = typeof expenses.$inferSelect;
 export type RevenueInvoice = typeof revenue_invoices.$inferSelect;
 export type Attendance = typeof attendance.$inferSelect;
 export type Alert = typeof alerts.$inferSelect;
+
+export * from "./auth";
