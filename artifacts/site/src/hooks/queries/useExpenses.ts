@@ -11,7 +11,7 @@ export function useExpenses() {
         .select("id, expense_date, project_id, category, supplier_id, employee_id, description, amount, method, proof_url, note")
         .order("expense_date", { ascending: false });
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         date: (r.expense_date as string) ?? new Date().toISOString(),
         projectId: String(r.project_id ?? ""),

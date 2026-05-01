@@ -8,6 +8,8 @@ export interface RefRow {
   sort_order: number;
 }
 
+type RawRefRow = { id: unknown; code: unknown; name: unknown; sort_order: unknown };
+
 export function useExpenseCategories() {
   return useQuery<RefRow[]>({
     queryKey: ["expense_categories"],
@@ -18,8 +20,8 @@ export function useExpenseCategories() {
         .order("sort_order")
         .order("name");
       if (error) throw error;
-      return (data ?? []).map((r) => ({
-        id: String(r.id), code: r.code as string, name: r.name as string,
+      return ((data as RawRefRow[]) ?? []).map((r) => ({
+        id: String(r.id), code: String(r.code), name: String(r.name),
         sort_order: Number(r.sort_order ?? 0),
       }));
     },
@@ -48,8 +50,8 @@ export function useSubCostCenters() {
         .order("sort_order")
         .order("name");
       if (error) throw error;
-      return (data ?? []).map((r) => ({
-        id: String(r.id), code: r.code as string, name: r.name as string,
+      return ((data as RawRefRow[]) ?? []).map((r) => ({
+        id: String(r.id), code: String(r.code), name: String(r.name),
         sort_order: Number(r.sort_order ?? 0),
       }));
     },

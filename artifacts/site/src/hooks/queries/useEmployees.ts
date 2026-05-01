@@ -11,7 +11,7 @@ export function useEmployees() {
         .select("id, name, role, project_id, hire_date, phone, status, base_salary, cash_held, days_worked_month")
         .order("name");
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         name: r.name as string,
         role: (r.role as string) ?? "",

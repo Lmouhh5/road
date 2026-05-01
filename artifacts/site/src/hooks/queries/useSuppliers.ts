@@ -25,7 +25,7 @@ export function useSuppliers() {
         .select("id, name, category, contact, phone, balance")
         .order("name");
       if (error) throw error;
-      return (data ?? []).map((r) => ({
+      return (data as Record<string, unknown>[] ?? []).map((r: Record<string, unknown>) => ({
         id: String(r.id),
         name: r.name as string,
         category: (r.category as string) ?? "other",

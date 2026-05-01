@@ -84,6 +84,9 @@
     "repairs": "Repairs",
     "transport": "Transport",
     "subcontracting": "Subcontracting",
+    "subcontract": "Subcontracting",
+    "equipment": "Equipment",
+    "overhead": "Overhead",
     "other": "Other"
   },
   "page": {
