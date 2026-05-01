@@ -1,7 +1,8 @@
-// Supabase replaced with a typed fetch-based adapter.
-// No @supabase/supabase-js dependency is used at runtime.
+// Typed fetch-based adapter replacing @supabase/supabase-js.
+// No runtime dependency on the Supabase SDK.
 
 const BASE = "/api";
+const API_SOURCE_HEADER = { "x-api-source": "routis-web" };
 
 const ROUTE_MAP: Record<string, string> = {
   alerts: "alerts",
@@ -24,9 +25,15 @@ const ROUTE_MAP: Record<string, string> = {
 type FilterEntry = { col: string; op: "eq" | "gte"; val: unknown };
 type QueryMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
+// Data returned from the API. Using a well-known JSON-safe type without circular self-reference.
+type JsonObject = Record<string, unknown>;
+type JsonValue = JsonObject | JsonObject[] | string | number | boolean | null;
+
+type QueryResult = { data: JsonValue; error: null } | { data: null; error: Error };
+
 interface QueryBuilder {
-  _table: string;
-  _filters: FilterEntry[];
+  readonly _table: string;
+  readonly _filters: FilterEntry[];
   _method: QueryMethod;
   _filterId: string | undefined;
   _body: Record<string, unknown> | undefined;
@@ -35,21 +42,16 @@ interface QueryBuilder {
   gte(col: string, val: unknown): QueryBuilder;
   order(col: string, opts?: { ascending?: boolean }): QueryBuilder;
   update(data: Record<string, unknown>): QueryBuilder;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  insert(data: Record<string, any> | Record<string, any>[]): QueryBuilder;
+  insert(data: Record<string, unknown> | Record<string, unknown>[]): QueryBuilder;
   delete(): QueryBuilder;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  single(): Promise<{ data: any; error: Error | null }>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  then<TResult1 = { data: any; error: Error | null }, TResult2 = never>(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    resolve: (v: { data: any; error: Error | null }) => TResult1 | PromiseLike<TResult1>,
+  single(): Promise<QueryResult>;
+  then<TResult1 = QueryResult, TResult2 = never>(
+    resolve: (v: QueryResult) => TResult1 | PromiseLike<TResult1>,
     reject?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
   ): Promise<TResult1 | TResult2>;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function execQuery(qb: QueryBuilder): Promise<{ data: any; error: Error | null }> {
+async function execQuery(qb: QueryBuilder): Promise<QueryResult> {
   try {
     const route = ROUTE_MAP[qb._table] ?? qb._table;
     const method = qb._method;
@@ -67,9 +69,9 @@ async function execQuery(qb: QueryBuilder): Promise<{ data: any; error: Error | 
       }
       const qs = params.toString();
       if (qs) url += `?${qs}`;
-      const resp = await fetch(url);
+      const resp = await fetch(url, { headers: API_SOURCE_HEADER });
       if (!resp.ok) throw new Error(await resp.text());
-      return { data: await resp.json(), error: null };
+      return { data: (await resp.json()) as JsonValue, error: null };
     }
 
     if ((method === "PATCH" || method === "DELETE") && qb._filterId != null) {
@@ -78,11 +80,11 @@ async function execQuery(qb: QueryBuilder): Promise<{ data: any; error: Error | 
 
     const resp = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...API_SOURCE_HEADER },
       body: method !== "DELETE" ? JSON.stringify(qb._body ?? {}) : undefined,
     });
     if (!resp.ok) throw new Error(await resp.text());
-    const data = method === "DELETE" ? null : await resp.json();
+    const data = method === "DELETE" ? null : (await resp.json()) as JsonValue;
     return { data, error: null };
   } catch (err) {
     return { data: null, error: err instanceof Error ? err : new Error(String(err)) };
@@ -90,53 +92,59 @@ async function execQuery(qb: QueryBuilder): Promise<{ data: any; error: Error | 
 }
 
 function makeQB(table: string): QueryBuilder {
+  const filters: FilterEntry[] = [];
+  let method: QueryMethod = "GET";
+  let filterId: string | undefined;
+  let body: Record<string, unknown> | undefined;
+
   const qb: QueryBuilder = {
-    _table: table,
-    _filters: [],
-    _method: "GET",
-    _filterId: undefined,
-    _body: undefined,
+    get _table() { return table; },
+    get _filters() { return filters; },
+    get _method() { return method; },
+    set _method(v) { method = v; },
+    get _filterId() { return filterId; },
+    set _filterId(v) { filterId = v; },
+    get _body() { return body; },
+    set _body(v) { body = v; },
 
     select(_cols?: string) { return qb; },
 
     eq(col: string, val: unknown) {
-      if (col === "id") {
-        qb._filterId = String(val);
-      } else {
-        qb._filters.push({ col, op: "eq", val });
-      }
+      if (col === "id") filterId = String(val);
+      else filters.push({ col, op: "eq", val });
       return qb;
     },
 
     gte(col: string, val: unknown) {
-      qb._filters.push({ col, op: "gte", val });
+      filters.push({ col, op: "gte", val });
       return qb;
     },
 
     order(_col: string, _opts?: { ascending?: boolean }) { return qb; },
 
     update(data: Record<string, unknown>) {
-      qb._method = "PATCH";
-      qb._body = data;
+      method = "PATCH";
+      body = data;
       return qb;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    insert(data: Record<string, any> | Record<string, any>[]) {
-      qb._method = "POST";
-      qb._body = Array.isArray(data) ? data[0] : data;
+    insert(data: Record<string, unknown> | Record<string, unknown>[]) {
+      method = "POST";
+      body = Array.isArray(data) ? data[0] : data;
       return qb;
     },
 
     delete() {
-      qb._method = "DELETE";
+      method = "DELETE";
       return qb;
     },
 
     single() { return execQuery(qb); },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    then(resolve: (v: { data: any; error: Error | null }) => any, reject?: ((e: unknown) => any) | null) {
+    then<TResult1 = QueryResult, TResult2 = never>(
+      resolve: (v: QueryResult) => TResult1 | PromiseLike<TResult1>,
+      reject?: ((reason: unknown) => TResult2 | PromiseLike<TResult2>) | null
+    ): Promise<TResult1 | TResult2> {
       return execQuery(qb).then(resolve, reject ?? undefined);
     },
   };
