@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import type { PayrollLine, PayrollStatus } from "@/data/mock";
 
 const BASE = "/api";
-const API_HEADERS = { "x-api-source": "routis-web" };
 
 /**
  * Payroll lines are derived from active employees.
@@ -12,7 +11,7 @@ export function usePayrollLines() {
   return useQuery<PayrollLine[]>({
     queryKey: ["payroll_lines"],
     queryFn: async () => {
-      const resp = await fetch(`${BASE}/employees?status=active`, { headers: API_HEADERS, credentials: "include" });
+      const resp = await fetch(`${BASE}/employees?status=active`, { credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
       const data = await resp.json() as Array<{
         id: string;

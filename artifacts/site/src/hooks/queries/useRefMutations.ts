@@ -3,7 +3,6 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 type RefTable = "projects" | "employees" | "assets" | "suppliers" | "cash_holders" | "expense_categories" | "sub_cost_centers";
 
 const BASE = "/api";
-const API_HEADERS = { "x-api-source": "routis-web" };
 
 const ROUTE_MAP: Record<RefTable, string> = {
   projects: "projects",
@@ -32,7 +31,7 @@ export function useUpdateRef(table: RefTable) {
       const route = ROUTE_MAP[table];
       const resp = await fetch(`${BASE}/${route}/${id}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", ...API_HEADERS },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify(values),
       });
@@ -48,7 +47,7 @@ export function useDeleteRef(table: RefTable) {
   return useMutation({
     mutationFn: async (id: string) => {
       const route = ROUTE_MAP[table];
-      const resp = await fetch(`${BASE}/${route}/${id}`, { method: "DELETE", headers: API_HEADERS, credentials: "include" });
+      const resp = await fetch(`${BASE}/${route}/${id}`, { method: "DELETE", credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
     },
     onSuccess: () => INVALIDATE[table].forEach((k) => qc.invalidateQueries({ queryKey: k })),

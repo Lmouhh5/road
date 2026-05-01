@@ -1,8 +1,4 @@
-// Typed fetch-based adapter replacing @supabase/supabase-js.
-// No runtime dependency on the Supabase SDK.
-
 const BASE = "/api";
-const API_SOURCE_HEADER = { "x-api-source": "routis-web" };
 
 const ROUTE_MAP: Record<string, string> = {
   alerts: "alerts",
@@ -13,7 +9,7 @@ const ROUTE_MAP: Record<string, string> = {
   employees: "employees",
   expense_categories: "expense-categories",
   expenses: "expenses",
-  payroll_runs: "payroll_runs",
+  payroll_runs: "payroll-runs",
   projects: "projects",
   revenue_invoices: "revenue-invoices",
   revenue_receipts: "revenue-receipts",
@@ -25,7 +21,6 @@ const ROUTE_MAP: Record<string, string> = {
 type FilterEntry = { col: string; op: "eq" | "gte"; val: unknown };
 type QueryMethod = "GET" | "POST" | "PATCH" | "DELETE";
 
-// Data returned from the API. Using a well-known JSON-safe type without circular self-reference.
 type JsonObject = Record<string, unknown>;
 type JsonValue = JsonObject | JsonObject[] | string | number | boolean | null;
 
@@ -69,7 +64,7 @@ async function execQuery(qb: QueryBuilder): Promise<QueryResult> {
       }
       const qs = params.toString();
       if (qs) url += `?${qs}`;
-      const resp = await fetch(url, { headers: API_SOURCE_HEADER, credentials: "include" });
+      const resp = await fetch(url, { credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
       return { data: (await resp.json()) as JsonValue, error: null };
     }
@@ -80,7 +75,7 @@ async function execQuery(qb: QueryBuilder): Promise<QueryResult> {
 
     const resp = await fetch(url, {
       method,
-      headers: { "Content-Type": "application/json", ...API_SOURCE_HEADER },
+      headers: { "Content-Type": "application/json" },
       credentials: "include",
       body: method !== "DELETE" ? JSON.stringify(qb._body ?? {}) : undefined,
     });
@@ -152,13 +147,8 @@ function makeQB(table: string): QueryBuilder {
   return qb;
 }
 
-export const supabase = {
+export const apiClient = {
   from(table: string): QueryBuilder { return makeQB(table); },
-  auth: {
-    getSession: async () => ({ data: { session: null }, error: null }),
-    signInWithPassword: async (_creds: unknown) => ({ data: null, error: new Error("Auth not configured") }),
-    signUp: async (_creds: unknown) => ({ data: null, error: new Error("Auth not configured") }),
-    signOut: async () => ({ error: null }),
-    onAuthStateChange: (_cb: unknown) => ({ data: { subscription: { unsubscribe: () => {} } } }),
-  },
 };
+
+export { apiClient as supabase };
