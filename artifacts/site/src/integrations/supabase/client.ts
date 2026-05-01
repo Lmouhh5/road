@@ -69,7 +69,7 @@ async function execQuery(qb: QueryBuilder): Promise<QueryResult> {
       }
       const qs = params.toString();
       if (qs) url += `?${qs}`;
-      const resp = await fetch(url, { headers: API_SOURCE_HEADER });
+      const resp = await fetch(url, { headers: API_SOURCE_HEADER, credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
       return { data: (await resp.json()) as JsonValue, error: null };
     }
@@ -81,6 +81,7 @@ async function execQuery(qb: QueryBuilder): Promise<QueryResult> {
     const resp = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json", ...API_SOURCE_HEADER },
+      credentials: "include",
       body: method !== "DELETE" ? JSON.stringify(qb._body ?? {}) : undefined,
     });
     if (!resp.ok) throw new Error(await resp.text());

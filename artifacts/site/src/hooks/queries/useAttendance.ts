@@ -25,7 +25,7 @@ export function useTodayAttendance() {
     queryKey: ["attendance", "today"],
     queryFn: async () => {
       const today = new Date().toISOString().slice(0, 10);
-      const resp = await fetch(`${BASE}/attendance?attendance_date=${today}`, { headers: API_HEADERS });
+      const resp = await fetch(`${BASE}/attendance?attendance_date=${today}`, { headers: API_HEADERS, credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
       const data = await resp.json() as AttendanceRecord[];
       return data.map((r) => ({
@@ -44,7 +44,7 @@ export function useAttendanceHeatmap() {
   return useQuery<AttendanceCell[]>({
     queryKey: ["attendance", "heatmap"],
     queryFn: async () => {
-      const resp = await fetch(`${BASE}/attendance/heatmap`, { headers: API_HEADERS });
+      const resp = await fetch(`${BASE}/attendance/heatmap`, { headers: API_HEADERS, credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
       const data = await resp.json() as HeatmapRecord[];
       const buckets = new Map<string, AttendanceCell>();
@@ -80,6 +80,7 @@ export function useInsertAttendance() {
       const resp = await fetch(`${BASE}/attendance`, {
         method: "POST",
         headers: { "Content-Type": "application/json", ...API_HEADERS },
+        credentials: "include",
         body: JSON.stringify(input),
       });
       if (!resp.ok) throw new Error(await resp.text());

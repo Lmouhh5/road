@@ -33,6 +33,7 @@ export function useUpdateRef(table: RefTable) {
       const resp = await fetch(`${BASE}/${route}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json", ...API_HEADERS },
+        credentials: "include",
         body: JSON.stringify(values),
       });
       if (!resp.ok) throw new Error(await resp.text());
@@ -47,7 +48,7 @@ export function useDeleteRef(table: RefTable) {
   return useMutation({
     mutationFn: async (id: string) => {
       const route = ROUTE_MAP[table];
-      const resp = await fetch(`${BASE}/${route}/${id}`, { method: "DELETE", headers: API_HEADERS });
+      const resp = await fetch(`${BASE}/${route}/${id}`, { method: "DELETE", headers: API_HEADERS, credentials: "include" });
       if (!resp.ok) throw new Error(await resp.text());
     },
     onSuccess: () => INVALIDATE[table].forEach((k) => qc.invalidateQueries({ queryKey: k })),

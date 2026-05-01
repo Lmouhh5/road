@@ -1,4 +1,4 @@
-import { Router, type IRouter } from "express";
+import { Router, type IRouter, type Request, type Response, type NextFunction } from "express";
 import { db } from "@workspace/db";
 import {
   projects, employees, assets, suppliers, cash_holders, cash_issues,
@@ -8,6 +8,16 @@ import {
 import { eq, sql, desc, asc } from "drizzle-orm";
 
 const router: IRouter = Router();
+
+function requireAuth(req: Request, res: Response, next: NextFunction): void {
+  if (!req.isAuthenticated()) {
+    res.status(401).json({ error: "Authentication required" });
+    return;
+  }
+  next();
+}
+
+router.use(requireAuth);
 
 // ─── PROJECTS ───────────────────────────────────────────────────────────────
 

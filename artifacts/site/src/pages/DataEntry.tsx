@@ -1,8 +1,7 @@
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-  Receipt, TrendingUp, Wallet, Users, Save, ArrowDownLeft, ArrowUpRight,
-  FileText, FileWarning, Activity,
+  Receipt, TrendingUp, Wallet, Users, Save, ArrowDownLeft, ArrowUpRight, Activity,
 } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/Section";
@@ -324,5 +323,3 @@ function ActivityRow({ item }: { item: typeof recentActivity[number] }) {
   );
 }
 
-// Unused imports kept intentionally minimal — remove icons we didn't use:
-void FileText; void FileWarning;
