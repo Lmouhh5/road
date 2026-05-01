@@ -43,7 +43,7 @@ export function useInsertExpense() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (input: InsertExpenseInput) => {
-      const { data, error } = await supabase.from("expenses").insert(input).select().single();
+      const { data, error } = await supabase.from("expenses").insert(input as unknown as Record<string, unknown>).select().single();
       if (error) throw error;
       return data;
     },
