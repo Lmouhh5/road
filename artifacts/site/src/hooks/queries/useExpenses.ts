@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/api/client";
 import type { ExpenseRow, ExpenseCategory, PaymentMethod, ProofStatus } from "@/data/mock";
 
 export function useExpenses() {
