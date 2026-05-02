@@ -36,3 +36,19 @@ app.use(authMiddleware);
 app.use("/api", router);
 
 export default app;
+
+export function startServer(port: number = 0): Promise<{ port: number }> {
+  return new Promise((resolve, reject) => {
+    const server = app.listen(port, (err?: Error) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const addr = server.address();
+      const actualPort =
+        typeof addr === "object" && addr != null ? addr.port : port;
+      logger.info({ port: actualPort }, "Server listening");
+      resolve({ port: actualPort });
+    });
+  });
+}

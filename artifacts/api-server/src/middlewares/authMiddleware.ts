@@ -26,6 +26,14 @@ declare global {
   }
 }
 
+const OFFLINE_LOCAL_USER: AuthUser = {
+  id: "local-admin",
+  email: "admin@local",
+  firstName: "Local",
+  lastName: "Admin",
+  profileImageUrl: null,
+};
+
 async function refreshIfExpired(
   sid: string,
   session: SessionData,
@@ -61,6 +69,12 @@ export async function authMiddleware(
   req.isAuthenticated = function (this: Request) {
     return this.user != null;
   } as Request["isAuthenticated"];
+
+  if (process.env["OFFLINE_MODE"] === "true") {
+    req.user = OFFLINE_LOCAL_USER;
+    next();
+    return;
+  }
 
   const sid = getSessionId(req);
   if (!sid) {

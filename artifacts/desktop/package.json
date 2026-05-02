@@ -1,0 +1,49 @@
+{
+  "name": "@workspace/desktop",
+  "version": "0.0.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently --kill-others \"pnpm --filter @workspace/site dev\" \"pnpm --filter @workspace/api-server build && wait-on http://localhost:5173 && electron .\"",
+    "build": "tsc -p tsconfig.json",
+    "build:windows": "pnpm run build && electron-builder --win",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@workspace/api-server": "workspace:*",
+    "@workspace/db": "workspace:*",
+    "electron": "^35.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "catalog:",
+    "concurrently": "^9.1.2",
+    "electron-builder": "^25.1.8",
+    "typescript": "~5.9.2",
+    "wait-on": "^8.0.3"
+  },
+  "build": {
+    "appId": "com.routis.desktop",
+    "productName": "Routis",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "node_modules/**/*",
+      "!node_modules/.cache/**"
+    ],
+    "extraResources": [
+      {
+        "from": "../site/dist",
+        "to": "site/dist"
+      }
+    ],
+    "win": {
+      "target": ["nsis", "portable"]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
+}

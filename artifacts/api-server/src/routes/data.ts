@@ -33,11 +33,11 @@ router.get("/projects", async (req, res) => {
 
 router.get("/projects/financial-summary", async (req, res) => {
   try {
-    const rows = await db.execute(sql`
-      SELECT p.id, p.code, p.name, p.budget::numeric AS budget, p.status,
-        COALESCE(SUM(e.amount)::numeric, 0) AS spent,
+    const rows = db.all(sql`
+      SELECT p.id, p.code, p.name, p.budget AS budget, p.status,
+        COALESCE(SUM(e.amount), 0) AS spent,
         CASE WHEN p.budget > 0
-          THEN ROUND(((p.budget - COALESCE(SUM(e.amount)::numeric, 0)) / p.budget * 100)::numeric, 2)
+          THEN ROUND((p.budget - COALESCE(SUM(e.amount), 0)) / p.budget * 100, 2)
           ELSE 0
         END AS margin
       FROM projects p
@@ -45,7 +45,7 @@ router.get("/projects/financial-summary", async (req, res) => {
       GROUP BY p.id, p.code, p.name, p.budget, p.status
       ORDER BY p.code
     `);
-    res.json(rows.rows);
+    res.json(rows);
   } catch (err: unknown) {
     req.log.error({ err }, "GET /projects/financial-summary failed");
     res.status(500).json({ error: err instanceof Error ? err.message : String(err) });
@@ -433,13 +433,13 @@ router.get("/attendance", async (req, res) => {
 
 router.get("/attendance/heatmap", async (req, res) => {
   try {
-    const rows = await db.execute(sql`
+    const rows = db.all(sql`
       SELECT attendance_date, status
       FROM attendance
-      WHERE attendance_date >= CURRENT_DATE - INTERVAL '83 days'
+      WHERE attendance_date >= date('now', '-83 days')
       ORDER BY attendance_date
     `);
-    res.json(rows.rows);
+    res.json(rows);
   } catch (err: unknown) {
     req.log.error({ err }, "GET /attendance/heatmap failed");
     res.status(500).json({ error: err instanceof Error ? err.message : String(err) });

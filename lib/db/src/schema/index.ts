@@ -1,184 +1,200 @@
-import { pgTable, uuid, text, numeric, boolean, timestamp, integer, date } from "drizzle-orm/pg-core";
+import {
+  sqliteTable,
+  text,
+  real,
+  integer,
+} from "drizzle-orm/sqlite-core";
 import { createInsertSchema } from "drizzle-zod";
-import { z } from "zod/v4";
-import { sql } from "drizzle-orm";
+import crypto from "crypto";
 
-export const projects = pgTable("projects", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+function uuid(name: string) {
+  return text(name).$defaultFn(() => crypto.randomUUID());
+}
+
+function now(name: string) {
+  return integer(name, { mode: "timestamp_ms" }).$defaultFn(() => new Date());
+}
+
+function today(name: string) {
+  return text(name).$defaultFn(() => new Date().toISOString().split("T")[0]);
+}
+
+export const projects = sqliteTable("projects", {
+  id: uuid("id").primaryKey(),
   code: text("code").notNull(),
   name: text("name").notNull(),
-  budget: numeric("budget", { precision: 18, scale: 2 }).notNull().default("0"),
-  contract_value: numeric("contract_value", { precision: 18, scale: 2 }),
+  budget: real("budget").notNull().default(0),
+  contract_value: real("contract_value"),
   status: text("status").notNull().default("on_track"),
-  start_date: date("start_date"),
-  end_date: date("end_date"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  start_date: text("start_date"),
+  end_date: text("end_date"),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const employees = pgTable("employees", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const employees = sqliteTable("employees", {
+  id: uuid("id").primaryKey(),
   name: text("name").notNull(),
   role: text("role"),
-  project_id: uuid("project_id").references(() => projects.id),
-  hire_date: date("hire_date"),
+  project_id: text("project_id").references(() => projects.id),
+  hire_date: text("hire_date"),
   phone: text("phone"),
   status: text("status").notNull().default("active"),
-  base_salary: numeric("base_salary", { precision: 18, scale: 2 }).notNull().default("0"),
-  cash_held: numeric("cash_held", { precision: 18, scale: 2 }).notNull().default("0"),
+  base_salary: real("base_salary").notNull().default(0),
+  cash_held: real("cash_held").notNull().default(0),
   days_worked_month: integer("days_worked_month").notNull().default(26),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const assets = pgTable("assets", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const assets = sqliteTable("assets", {
+  id: uuid("id").primaryKey(),
   code: text("code"),
   name: text("name").notNull(),
   type: text("type").notNull().default("truck"),
-  project_id: uuid("project_id").references(() => projects.id),
+  project_id: text("project_id").references(() => projects.id),
   status: text("status").notNull().default("active"),
-  hours_month: numeric("hours_month", { precision: 10, scale: 2 }).notNull().default("0"),
-  fuel_month: numeric("fuel_month", { precision: 10, scale: 2 }).notNull().default("0"),
-  cost_month: numeric("cost_month", { precision: 18, scale: 2 }).notNull().default("0"),
-  last_service: date("last_service"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  hours_month: real("hours_month").notNull().default(0),
+  fuel_month: real("fuel_month").notNull().default(0),
+  cost_month: real("cost_month").notNull().default(0),
+  last_service: text("last_service"),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const suppliers = pgTable("suppliers", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const suppliers = sqliteTable("suppliers", {
+  id: uuid("id").primaryKey(),
   name: text("name").notNull(),
   category: text("category"),
   contact: text("contact"),
   phone: text("phone"),
-  balance: numeric("balance", { precision: 18, scale: 2 }).notNull().default("0"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  balance: real("balance").notNull().default(0),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const cash_holders = pgTable("cash_holders", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const cash_holders = sqliteTable("cash_holders", {
+  id: uuid("id").primaryKey(),
   name: text("name").notNull(),
   role: text("role"),
-  balance: numeric("balance", { precision: 18, scale: 2 }).notNull().default("0"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  balance: real("balance").notNull().default(0),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const cash_requests = pgTable("cash_requests", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  project_id: uuid("project_id").references(() => projects.id),
-  requester_id: uuid("requester_id").references(() => employees.id),
-  amount: numeric("amount", { precision: 18, scale: 2 }).notNull().default("0"),
+export const cash_requests = sqliteTable("cash_requests", {
+  id: uuid("id").primaryKey(),
+  project_id: text("project_id").references(() => projects.id),
+  requester_id: text("requester_id").references(() => employees.id),
+  amount: real("amount").notNull().default(0),
   purpose: text("purpose"),
   status: text("status").notNull().default("pending"),
-  request_date: date("request_date").notNull().default(sql`CURRENT_DATE`),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  request_date: today("request_date").notNull(),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const cash_issues = pgTable("cash_issues", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  holder_id: uuid("holder_id").references(() => cash_holders.id),
-  request_id: uuid("request_id").references(() => cash_requests.id),
-  amount: numeric("amount", { precision: 18, scale: 2 }).notNull().default("0"),
+export const cash_issues = sqliteTable("cash_issues", {
+  id: uuid("id").primaryKey(),
+  holder_id: text("holder_id").references(() => cash_holders.id),
+  request_id: text("request_id").references(() => cash_requests.id),
+  amount: real("amount").notNull().default(0),
   source: text("source"),
   note: text("note"),
-  issue_date: date("issue_date").notNull().default(sql`CURRENT_DATE`),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  issue_date: today("issue_date").notNull(),
+  created_at: now("created_at").notNull(),
 });
 
-export const expense_categories = pgTable("expense_categories", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const expense_categories = sqliteTable("expense_categories", {
+  id: uuid("id").primaryKey(),
   code: text("code").notNull(),
   name: text("name").notNull(),
   sort_order: integer("sort_order").notNull().default(0),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const sub_cost_centers = pgTable("sub_cost_centers", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const sub_cost_centers = sqliteTable("sub_cost_centers", {
+  id: uuid("id").primaryKey(),
   code: text("code").notNull(),
   name: text("name").notNull(),
   sort_order: integer("sort_order").notNull().default(0),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const expenses = pgTable("expenses", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  expense_date: date("expense_date").notNull().default(sql`CURRENT_DATE`),
-  project_id: uuid("project_id").references(() => projects.id),
+export const expenses = sqliteTable("expenses", {
+  id: uuid("id").primaryKey(),
+  expense_date: today("expense_date").notNull(),
+  project_id: text("project_id").references(() => projects.id),
   category: text("category"),
-  supplier_id: uuid("supplier_id").references(() => suppliers.id),
-  employee_id: uuid("employee_id").references(() => employees.id),
+  supplier_id: text("supplier_id").references(() => suppliers.id),
+  employee_id: text("employee_id").references(() => employees.id),
   description: text("description"),
-  amount: numeric("amount", { precision: 18, scale: 2 }).notNull().default("0"),
+  amount: real("amount").notNull().default(0),
   method: text("method"),
   proof_url: text("proof_url"),
   note: text("note"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
 });
 
-export const revenue_invoices = pgTable("revenue_invoices", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const revenue_invoices = sqliteTable("revenue_invoices", {
+  id: uuid("id").primaryKey(),
   invoice_number: text("invoice_number"),
-  issued_date: date("issued_date").notNull().default(sql`CURRENT_DATE`),
-  due_date: date("due_date"),
-  project_id: uuid("project_id").references(() => projects.id),
+  issued_date: today("issued_date").notNull(),
+  due_date: text("due_date"),
+  project_id: text("project_id").references(() => projects.id),
   client: text("client").notNull(),
-  amount: numeric("amount", { precision: 18, scale: 2 }).notNull().default("0"),
-  paid_amount: numeric("paid_amount", { precision: 18, scale: 2 }).notNull().default("0"),
+  amount: real("amount").notNull().default(0),
+  paid_amount: real("paid_amount").notNull().default(0),
   status: text("status").notNull().default("pending"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const revenue_receipts = pgTable("revenue_receipts", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  invoice_id: uuid("invoice_id").references(() => revenue_invoices.id),
-  receipt_date: date("receipt_date").notNull().default(sql`CURRENT_DATE`),
-  amount: numeric("amount", { precision: 18, scale: 2 }).notNull().default("0"),
+export const revenue_receipts = sqliteTable("revenue_receipts", {
+  id: uuid("id").primaryKey(),
+  invoice_id: text("invoice_id").references(() => revenue_invoices.id),
+  receipt_date: today("receipt_date").notNull(),
+  amount: real("amount").notNull().default(0),
   method: text("method"),
   note: text("note"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
 });
 
-export const attendance = pgTable("attendance", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  employee_id: uuid("employee_id").references(() => employees.id),
-  project_id: uuid("project_id").references(() => projects.id),
-  attendance_date: date("attendance_date").notNull().default(sql`CURRENT_DATE`),
+export const attendance = sqliteTable("attendance", {
+  id: uuid("id").primaryKey(),
+  employee_id: text("employee_id").references(() => employees.id),
+  project_id: text("project_id").references(() => projects.id),
+  attendance_date: today("attendance_date").notNull(),
   status: text("status").notNull().default("present"),
-  hours: numeric("hours", { precision: 5, scale: 2 }).notNull().default("8"),
+  hours: real("hours").notNull().default(8),
   note: text("note"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
 });
 
-export const payroll_runs = pgTable("payroll_runs", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
-  project_id: uuid("project_id").references(() => projects.id),
+export const payroll_runs = sqliteTable("payroll_runs", {
+  id: uuid("id").primaryKey(),
+  project_id: text("project_id").references(() => projects.id),
   period_month: text("period_month").notNull(),
-  gross_amount: numeric("gross_amount", { precision: 18, scale: 2 }).notNull().default("0"),
-  net_amount: numeric("net_amount", { precision: 18, scale: 2 }).notNull().default("0"),
+  gross_amount: real("gross_amount").notNull().default(0),
+  net_amount: real("net_amount").notNull().default(0),
   status: text("status").notNull().default("draft"),
   note: text("note"),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+  created_at: now("created_at").notNull(),
+  updated_at: now("updated_at").notNull(),
 });
 
-export const alerts = pgTable("alerts", {
-  id: uuid("id").primaryKey().default(sql`gen_random_uuid()`),
+export const alerts = sqliteTable("alerts", {
+  id: uuid("id").primaryKey(),
   type: text("type").notNull(),
   severity: text("severity").notNull().default("medium"),
   message: text("message").notNull(),
   entity_id: text("entity_id"),
   entity_type: text("entity_type"),
-  resolved: boolean("resolved").notNull().default(false),
-  resolved_at: timestamp("resolved_at", { withTimezone: true }),
-  created_at: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  resolved: integer("resolved", { mode: "boolean" }).notNull().default(false),
+  resolved_at: integer("resolved_at", { mode: "timestamp_ms" }),
+  created_at: now("created_at").notNull(),
 });
 
 export const insertProjectSchema = createInsertSchema(projects).omit({ id: true, created_at: true, updated_at: true });

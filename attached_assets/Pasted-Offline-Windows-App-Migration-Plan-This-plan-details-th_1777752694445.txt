@@ -1,0 +1,55 @@
+Offline Windows App Migration Plan
+This plan details the strategy to convert the existing Routis web application (React + Express + PostgreSQL) into a fully offline standalone Windows application.
+
+Strategy: Electron + SQLite
+To maximize code reuse and maintain the existing architecture, we will wrap the application in Electron and migrate the database from PostgreSQL to SQLite.
+
+Electron allows us to package both the Vite/React frontend and the Express Node.js backend into a single runnable Windows .exe.
+SQLite is a file-based, serverless database that runs entirely local, perfect for an offline app.
+IMPORTANT
+
+User Review Required
+
+Data Syncing: Since the app will be offline, all data will live locally on the user's Windows machine. If you need this data to eventually sync to a central server in the future, we should design the schema with sync markers (e.g., last_synced_at). Let me know if syncing is a future requirement.
+Authentication: The current system has an auth layer. In an offline app, auth usually transforms into local PINs or Windows user accounts. Should we disable auth completely or keep a local login screen?
+Proposed Changes
+1. Database Migration (PostgreSQL -> SQLite)
+We need to swap out node-postgres for better-sqlite3.
+
+[MODIFY] lib/db/package.json
+Remove pg, @types/pg, drizzle-orm/node-postgres.
+Add better-sqlite3, @types/better-sqlite3, drizzle-orm/better-sqlite3.
+[MODIFY] lib/db/src/schema/index.ts & auth.ts
+Change imports from drizzle-orm/pg-core to drizzle-orm/sqlite-core.
+Replace pgTable with sqliteTable.
+Map PostgreSQL types to SQLite equivalents:
+uuid -> text().$defaultFn(() => crypto.randomUUID())
+numeric -> real (or integer cents)
+timestamp -> integer (storing epoch milliseconds)
+boolean -> integer({ mode: 'boolean' })
+[MODIFY] lib/db/src/index.ts
+Initialize better-sqlite3 pointing to a local file (e.g., app-data.sqlite) stored in the Windows user's AppData folder instead of using a DATABASE_URL.
+2. Electron Shell Integration
+[NEW] artifacts/desktop (New Workspace Package)
+Create a new package for the Electron wrapper.
+Add dependencies: electron, electron-builder.
+Main Process (main.ts):
+Bootstraps the SQLite database connection.
+Starts the existing Express API server (artifacts/api-server/src/app.ts) on a local port.
+Spawns the Electron BrowserWindow.
+In development: Loads the Vite dev server URL.
+In production: Serves the static built files from artifacts/site/dist.
+[MODIFY] pnpm-workspace.yaml
+Add artifacts/desktop to the workspace.
+3. API & Frontend Adjustments
+[MODIFY] artifacts/api-server/src/app.ts
+Expose a way to programmatically start the server and return the dynamically assigned port so Electron knows where to route requests.
+[MODIFY] artifacts/site/src/lib/api.ts (or similar fetch wrapper)
+Ensure the base API URL correctly points to the locally running Express port instead of a remote server. We can pass the port to the frontend via Electron IPC or window properties.
+Verification Plan
+Automated Tests
+Run pnpm run typecheck across the whole workspace to ensure the SQLite schema changes haven't broken any backend Drizzle queries or frontend types.
+Manual Verification
+Run the local development environment (pnpm run dev:desktop) to ensure the Electron window opens, the React app loads, and data is correctly saved to the local SQLite file.
+Build the Windows executable (pnpm run build:windows) using electron-builder.
+Install the .exe and verify it runs completely offline without needing an active internet connection or a running Postgres instance.

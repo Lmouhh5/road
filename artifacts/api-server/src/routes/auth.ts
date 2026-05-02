@@ -211,19 +211,22 @@ router.post(
       return;
     }
 
-    const { code, code_verifier, redirect_uri, state, nonce } = parsed.data;
+    const { code, codeVerifier, redirectUri } = parsed.data;
+    const body = req.body as Record<string, unknown>;
+    const state = typeof body["state"] === "string" ? body["state"] : undefined;
+    const nonce = typeof body["nonce"] === "string" ? body["nonce"] : undefined;
 
     try {
       const config = await getOidcConfig();
 
-      const callbackUrl = new URL(redirect_uri);
+      const callbackUrl = new URL(redirectUri);
       callbackUrl.searchParams.set("code", code);
-      callbackUrl.searchParams.set("state", state);
+      if (state) callbackUrl.searchParams.set("state", state);
       callbackUrl.searchParams.set("iss", ISSUER_URL);
 
       const tokens = await oidc.authorizationCodeGrant(config, callbackUrl, {
-        pkceCodeVerifier: code_verifier,
-        expectedNonce: nonce ?? undefined,
+        pkceCodeVerifier: codeVerifier,
+        expectedNonce: nonce,
         expectedState: state,
         idTokenExpected: true,
       });
