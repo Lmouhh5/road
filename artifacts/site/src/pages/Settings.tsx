@@ -1,15 +1,15 @@
-import { useMemo, useState } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   Briefcase, Layers, Tags, Users, Truck, Building2, Wallet,
   Database, FileText, Languages, Calendar, Palette, Sun, Moon,
-  Download, RefreshCw, AlertTriangle, ChevronRight, Save,
+  Download, Upload, RefreshCw, AlertTriangle, ChevronRight, Save,
+  Loader2, ShieldAlert,
 } from "lucide-react";
 import { toast } from "sonner";
 import { PageHeader } from "@/components/PageHeader";
 import { Section } from "@/components/Section";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
@@ -73,18 +73,15 @@ function ReferenceTab() {
   const { t } = useTranslation();
   const [openKind, setOpenKind] = useState<null | "projects" | "employees" | "machines" | "suppliers" | "cash_holders" | "categories" | "subcost">(null);
 
-  const items = useMemo(
-    () => [
-      { key: "projects",     icon: Briefcase, count: projects.length,             entity: "projects" as const },
-      { key: "subcost",      icon: Layers,    count: projects.length * 9,         entity: "subcost" as const },
-      { key: "categories",   icon: Tags,      count: expenseCategoryKeys.length,  entity: "categories" as const },
-      { key: "employees",    icon: Users,     count: employees.length,            entity: "employees" as const },
-      { key: "machines",     icon: Truck,     count: machines.length,             entity: "machines" as const },
-      { key: "suppliers",    icon: Building2, count: suppliers.length,            entity: "suppliers" as const },
-      { key: "cash_holders", icon: Wallet,    count: cashHolders.length,          entity: "cash_holders" as const },
-    ],
-    [],
-  );
+  const items = [
+    { key: "projects",     icon: Briefcase, count: projects.length,             entity: "projects" as const },
+    { key: "subcost",      icon: Layers,    count: projects.length * 9,         entity: "subcost" as const },
+    { key: "categories",   icon: Tags,      count: expenseCategoryKeys.length,  entity: "categories" as const },
+    { key: "employees",    icon: Users,     count: employees.length,            entity: "employees" as const },
+    { key: "machines",     icon: Truck,     count: machines.length,             entity: "machines" as const },
+    { key: "suppliers",    icon: Building2, count: suppliers.length,            entity: "suppliers" as const },
+    { key: "cash_holders", icon: Wallet,    count: cashHolders.length,          entity: "cash_holders" as const },
+  ];
 
   return (
     <>
@@ -260,20 +257,121 @@ function DisplayTab() {
 function DataTab() {
   const { t } = useTranslation();
   const [reportFmt, setReportFmt] = useState("a4");
+  const [exporting, setExporting] = useState(false);
+  const [importing, setImporting] = useState(false);
+  const [resetting, setResetting] = useState(false);
+  const [resetArmed, setResetArmed] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  async function handleExport() {
+    setExporting(true);
+    try {
+      const res = await fetch("/api/backup/export");
+      if (!res.ok) throw new Error(await res.text());
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `routis-backup-${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      toast.success(t("settings_page.data.export_success"));
+    } catch (err) {
+      toast.error(String(err));
+    } finally {
+      setExporting(false);
+    }
+  }
+
+  async function handleImport(file: File) {
+    setImporting(true);
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text) as unknown;
+      const res = await fetch("/api/backup/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const body = await res.json() as { error?: string };
+        throw new Error(body.error ?? "Import failed");
+      }
+      toast.success(t("settings_page.data.import_success"));
+    } catch (err) {
+      toast.error(String(err));
+    } finally {
+      setImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  async function handleReset() {
+    if (!resetArmed) {
+      setResetArmed(true);
+      return;
+    }
+    setResetting(true);
+    try {
+      const res = await fetch("/api/backup/reset", { method: "POST" });
+      if (!res.ok) throw new Error(await res.text());
+      toast.success(t("settings_page.data.reset_success"));
+    } catch (err) {
+      toast.error(String(err));
+    } finally {
+      setResetting(false);
+      setResetArmed(false);
+    }
+  }
 
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+
+      {/* Export */}
       <Section title={t("settings_page.data.export_title")} subtitle={t("settings_page.data.export_desc")}>
         <Button
-          onClick={() => toast.success(t("page.coming_soon"))}
+          onClick={handleExport}
+          disabled={exporting}
           variant="outline"
           className="w-full justify-center gap-2"
         >
-          <Download className="h-4 w-4" />
-          {t("settings_page.data.export_btn")}
+          {exporting
+            ? <Loader2 className="h-4 w-4 animate-spin" />
+            : <Download className="h-4 w-4" />
+          }
+          {exporting ? t("settings_page.data.exporting") : t("settings_page.data.export_btn")}
         </Button>
       </Section>
 
+      {/* Import */}
+      <Section title={t("settings_page.data.import_title")} subtitle={t("settings_page.data.import_desc")}>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".json"
+          className="hidden"
+          onChange={(e) => {
+            const file = e.target.files?.[0];
+            if (file) void handleImport(file);
+          }}
+        />
+        <Button
+          onClick={() => fileInputRef.current?.click()}
+          disabled={importing}
+          variant="outline"
+          className="w-full justify-center gap-2"
+        >
+          {importing
+            ? <Loader2 className="h-4 w-4 animate-spin" />
+            : <Upload className="h-4 w-4" />
+          }
+          {importing ? t("settings_page.data.importing") : t("settings_page.data.import_btn")}
+        </Button>
+      </Section>
+
+      {/* Report format */}
       <Section title={t("settings_page.data.report_title")} subtitle={t("settings_page.data.report_desc")}>
         <div className="flex items-center gap-3">
           <FileText className="h-4 w-4 text-muted-foreground" />
@@ -288,25 +386,52 @@ function DataTab() {
         </div>
       </Section>
 
+      {/* Danger zone — reset all */}
       <Section
         className="lg:col-span-2 border-error/40"
         title={t("settings_page.data.reset_title")}
         subtitle={t("settings_page.data.reset_desc")}
       >
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-3 flex-wrap">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-error/15 px-2.5 py-1 text-[11px] font-semibold text-error">
             <AlertTriangle className="h-3 w-3" />
             {t("settings_page.data.danger")}
           </span>
-          <Button
-            onClick={() => toast.success(t("settings_page.saved"))}
-            variant="destructive"
-            className="gap-2"
-          >
-            <RefreshCw className="h-4 w-4" />
-            {t("settings_page.data.reset_btn")}
-          </Button>
+          <div className="flex items-center gap-2">
+            {resetArmed && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setResetArmed(false)}
+                className="gap-1.5 text-muted-foreground"
+              >
+                {t("settings_page.data.reset_cancel")}
+              </Button>
+            )}
+            <Button
+              onClick={() => void handleReset()}
+              disabled={resetting}
+              variant="destructive"
+              className="gap-2"
+            >
+              {resetting
+                ? <Loader2 className="h-4 w-4 animate-spin" />
+                : resetArmed
+                  ? <ShieldAlert className="h-4 w-4" />
+                  : <RefreshCw className="h-4 w-4" />
+              }
+              {resetArmed
+                ? t("settings_page.data.reset_confirm_btn")
+                : t("settings_page.data.reset_btn")
+              }
+            </Button>
+          </div>
         </div>
+        {resetArmed && (
+          <p className="mt-2 text-xs text-error/80">
+            {t("settings_page.data.reset_confirm")}
+          </p>
+        )}
       </Section>
     </div>
   );
