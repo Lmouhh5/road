@@ -1,1 +1,0 @@
-alter view public.v_project_financial_summary set (security_invoker = on);

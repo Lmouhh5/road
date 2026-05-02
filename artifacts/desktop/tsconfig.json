@@ -1,22 +1,10 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "target": "ES2022",
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "lib": ["ES2022"],
     "outDir": "./dist",
-    "rootDir": "./src",
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
     "skipLibCheck": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
     "noImplicitReturns": true,
-    "paths": {
-      "@workspace/api-server/app": ["../../artifacts/api-server/src/app.ts"],
-      "@workspace/db": ["../../lib/db/src/index.ts"]
-    }
+    "types": ["node"]
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
