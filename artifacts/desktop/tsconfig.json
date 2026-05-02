@@ -12,7 +12,11 @@
     "skipLibCheck": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "noImplicitReturns": true
+    "noImplicitReturns": true,
+    "paths": {
+      "@workspace/api-server/app": ["../../artifacts/api-server/src/app.ts"],
+      "@workspace/db": ["../../lib/db/src/index.ts"]
+    }
   },
   "include": ["src"],
   "exclude": ["node_modules", "dist"]

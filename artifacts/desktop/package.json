@@ -12,6 +12,8 @@
   "dependencies": {
     "@workspace/api-server": "workspace:*",
     "@workspace/db": "workspace:*",
+    "better-sqlite3": "^11.10.0",
+    "drizzle-orm": "catalog:",
     "electron": "^35.2.1"
   },
   "devDependencies": {
@@ -36,6 +38,10 @@
       {
         "from": "../site/dist",
         "to": "site/dist"
+      },
+      {
+        "from": "../../lib/db/drizzle",
+        "to": "migrations"
       }
     ],
     "win": {
